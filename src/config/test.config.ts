@@ -66,6 +66,11 @@ class Configuration {
     return this.config.browser;
   }
 
+  // Get timeout configuration
+  public getTimeoutConfig(): TestConfig['timeout'] {
+    return this.config.timeout;
+  }
+
 }
 
 export default Configuration.getInstance();

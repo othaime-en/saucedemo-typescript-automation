@@ -1,0 +1,39 @@
+{
+  "name": "saucedemo-typescript-automation",
+  "version": "1.0.0",
+  "description": "Selenium WebDriver test automation framework for SauceDemo using TypeScript",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist reports/screenshots reports/*.html",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "keywords": [],
+  "author": "othaimeen",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.1",
+    "rimraf": "^5.0.5",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "chai": "^4.4.1",
+    "csv-parse": "^5.5.3",
+    "mocha": "^10.2.0",
+    "selenium-webdriver": "^4.16.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

@@ -56,17 +56,6 @@ export default class BasePage {
     }
   }
 
-  // Get page title
-  public async getPageTitle(): Promise<string> {
-    return await this.driver.getTitle();
-  }
-
-  // Type text into element
-  protected async typeText(){
-    
-  }
-
-  
   // Wait for element to be visible
   protected async waitForElement(locator: By, timeout?: number): Promise<WebElement> {
     const waitTime = timeout || this.timeout;
@@ -81,6 +70,56 @@ export default class BasePage {
       throw new Error(`Element not visible: ${locator.toString()}`);
     }
   }
+
+  // Get page title
+  public async getPageTitle(): Promise<string> {
+    return await this.driver.getTitle();
+  }
+
+  // Type text into element
+  protected async typeText(locator: By, text: string, clearFirst: boolean = true): Promise<void> {
+    try {
+      const element = await this.findElement(locator);
+      await this.driver.wait(until.elementIsVisible(element), this.timeout);
+      
+      if (clearFirst) {
+        await element.clear();
+      }
+      
+      await element.sendKeys(text);
+    } catch (error) {
+      throw new Error(`Failed to type text into ${locator.toString()}: ${(error as Error).message}`);
+    }
+  }
+
+  // get text from element
+  protected async getElementText(locator: By): Promise<string> {
+    try {
+      const element = await this.findElement(locator);
+      await this.driver.wait(until.elementIsVisible(element), this.timeout);
+      return await element.getText();
+    } catch (error) {
+      throw new Error(`Failed to get text from ${locator.toString()}: ${(error as Error).message}`);
+    }
+  }
+
+
+  // get attribute from element
+  protected async getElementAttribute(locator: By, attribute: string): Promise<string | null> {
+    try {
+      const element = await this.findElement(locator);
+      return await element.getAttribute(attribute);
+    } catch (error) {
+      throw new Error(`Failed to get attribute ${attribute} from ${locator.toString()}: ${(error as Error).message}`);
+    }
+  }
+
+
+
+
+
+  
+  
 
  
   

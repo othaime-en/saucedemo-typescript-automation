@@ -1,0 +1,88 @@
+import { WebDriver, By, until, WebElement } from 'selenium-webdriver';
+
+import config from '../config/test.config.js';
+
+/**
+ * Base Page class containing common web interactions
+ * All page objects should extend this class
+ */
+export default class BasePage {
+  protected driver: WebDriver;
+  protected timeout: number;
+
+  constructor(driver: WebDriver) {
+    this.driver = driver;
+    this.timeout = config.getTimeoutConfig().explicit;
+  }
+
+  // Navigate to a specific URL
+  public async navigateTo(url: string): Promise<void> {
+    await this.driver.get(url);
+  }
+
+  // Find element with explicit wait
+  protected async findElement(locator: By, timeout?: number): Promise<WebElement> {
+    const waitTime = timeout || this.timeout;
+    try {
+      return await this.driver.wait(
+        until.elementLocated(locator),
+        waitTime,
+        `Element not found: ${locator.toString()}`
+      );
+    } catch (error) {
+      throw new Error(`Failed to find element ${locator.toString()}: ${(error as Error).message}`);
+    }
+  }
+
+  // Find multiple elements
+  protected async findElements(locator: By): Promise<WebElement[]> {
+    try {
+      await this.waitForElement(locator);
+      return await this.driver.findElements(locator);
+    } catch (error) {
+      throw new Error(`Failed to find elements ${locator.toString()}: ${(error as Error).message}`);
+    }
+  }
+
+  // Click element with wait
+  protected async clickElement(locator: By, timeout?: number): Promise<void> {
+    try {
+      const element = await this.findElement(locator, timeout);
+      await this.driver.wait(until.elementIsVisible(element), timeout || this.timeout);
+      await this.driver.wait(until.elementIsEnabled(element), timeout || this.timeout);
+      await element.click();
+    } catch (error) {
+      throw new Error(`Failed to click element ${locator.toString()}: ${(error as Error).message}`);
+    }
+  }
+
+  // Get page title
+  public async getPageTitle(): Promise<string> {
+    return await this.driver.getTitle();
+  }
+
+  // Type text into element
+  protected async typeText(){
+    
+  }
+
+  
+  // Wait for element to be visible
+  protected async waitForElement(locator: By, timeout?: number): Promise<WebElement> {
+    const waitTime = timeout || this.timeout;
+    try {
+      const element = await this.driver.wait(
+        until.elementLocated(locator),
+        waitTime
+      );
+      await this.driver.wait(until.elementIsVisible(element), waitTime);
+      return element;
+    } catch (error) {
+      throw new Error(`Element not visible: ${locator.toString()}`);
+    }
+  }
+
+ 
+  
+  
+}

@@ -27,3 +27,10 @@ export interface TestConfig {
     path: string;
   };
 }
+
+// Screenshot options
+export interface ScreenshotOptions {
+  testName: string;
+  stepName?: string;
+  timestamp?: boolean;
+}

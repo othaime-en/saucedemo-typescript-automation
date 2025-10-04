@@ -71,6 +71,11 @@ class Configuration {
     return this.config.timeout;
   }
 
+  // Get screenshot path
+  public getScreenshotPath(): string {
+    return this.config.screenshots.path;
+  }
+
 }
 
 export default Configuration.getInstance();

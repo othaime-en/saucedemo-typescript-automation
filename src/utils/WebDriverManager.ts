@@ -3,6 +3,7 @@ import chrome from 'selenium-webdriver/chrome.js';
 import firefox from 'selenium-webdriver/firefox.js';
 
 import config from '../config/test.config.js';
+import ScreenshotUtils from './ScreenshotUtils.js'
 
 /**
  * WebDriver Manager - Singleton pattern for managing WebDriver instances
@@ -91,12 +92,45 @@ class WebDriverManager {
     return this.driver;
   }
 
-  //Get current WebDriver instance
-  public getDriver() {
+  /**
+   * Get current WebDriver instance
+   * @returns Current WebDriver instance
+   * @throws Error if driver not initialized
+   */
+  public getDriver(): WebDriver {
+    if (!this.driver) {
+      throw new Error('WebDriver not initialized. Call createDriver() first.');
+    }
+    return this.driver;
   }
 
-  // Quit WebDriver and cleanup
-  public async quitDriver() {
+  /**
+   * Quit WebDriver and cleanup
+   */
+  public async quitDriver(): Promise<void> {
+    if (this.driver) {
+      try {
+        await this.driver.quit();
+      } catch (error) {
+        console.error('Error quitting driver:', (error as Error).message);
+      } finally {
+        this.driver = null;
+      }
+    }
+  }
+
+  /**
+   * Capture screenshot on test failure
+   * @param testName - Name of the failed test
+   */
+  public async captureFailureScreenshot(testName: string): Promise<void> {
+    if (this.driver && config.getConfig().screenshots.onFailure) {
+      try {
+        await ScreenshotUtils.captureFailureEvidence(this.driver, testName);
+      } catch (error) {
+        console.error('Failed to capture screenshot:', (error as Error).message);
+      }
+    }
   }
 
 }

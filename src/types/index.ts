@@ -34,3 +34,12 @@ export interface ScreenshotOptions {
   stepName?: string;
   timestamp?: boolean;
 }
+
+//User credentials for testing
+export interface UserCredentials {
+  username: string;
+  password: string;
+  userType: string;
+  expectedResult: 'success' | 'failure';
+  description: string;
+}

@@ -11,7 +11,9 @@ export default class LoginPage extends BasePage {
   private readonly passwordInput: By = By.id('password');
   private readonly loginButton: By = By.id('login-button');
   private readonly errorMessage: By = By.css('[data-test="error"]');
-  private readonly errorButton: By = By.css('.error-button'); 
+  private readonly errorButton: By = By.css('.error-button');
+  private readonly loginLogo: By = By.css('.login_logo');
+  private readonly loginCredentials: By = By.id('login_credentials'); 
 
   constructor(driver: WebDriver) {
     super(driver);
@@ -69,6 +71,59 @@ export default class LoginPage extends BasePage {
     if (await this.isElementDisplayed(this.errorButton)) {
       await this.clickElement(this.errorButton);
     }
+  }
+
+
+  // Check if user is on login page
+  public async isOnLoginPage(): Promise<boolean> {
+    try {
+      const url = await this.getCurrentUrl();
+      const logoDisplayed = await this.isElementDisplayed(this.loginLogo);
+      const loginButtonDisplayed = await this.isElementDisplayed(this.loginButton);
+      
+      return url.includes('saucedemo.com') && 
+             logoDisplayed && 
+             loginButtonDisplayed &&
+             !url.includes('inventory');
+    } catch (error) {
+      return false;
+    }
+  }
+
+  // Check if username field is displayed
+  public async isUsernameFieldDisplayed(): Promise<boolean> {
+    return await this.isElementDisplayed(this.usernameInput);
+  }
+
+  // Check if password field is displayed
+  public async isPasswordFieldDisplayed(): Promise<boolean> {
+    return await this.isElementDisplayed(this.passwordInput);
+  }
+
+
+  // Check if login button is enabled
+  public async isLoginButtonEnabled(): Promise<boolean> {
+    return await this.isElementEnabled(this.loginButton);
+  }
+
+  // Get list of accepted usernames from login page
+  public async getAcceptedUsernames(): Promise<string[]> {
+    try {
+      const credentialsText = await this.getElementText(this.loginCredentials);
+      const usernames = credentialsText
+        .split('\n')
+        .filter(line => line.includes('_user'))
+        .map(line => line.trim());
+      return usernames;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  // Clear login form fields
+  public async clearLoginForm(): Promise<void> {
+    await this.typeText(this.usernameInput, '', true);
+    await this.typeText(this.passwordInput, '', true);
   }
 
 

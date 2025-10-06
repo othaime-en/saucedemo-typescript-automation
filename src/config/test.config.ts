@@ -76,6 +76,11 @@ class Configuration {
     return this.config.screenshots.path;
   }
 
+  // Get base URL
+  public getBaseUrl(): string {
+    return this.config.baseUrl;
+  }
+
 }
 
 export default Configuration.getInstance();

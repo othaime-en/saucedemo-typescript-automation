@@ -1,6 +1,7 @@
 import { WebDriver, By } from 'selenium-webdriver';
 
 import BasePage from './BasePage.js';
+import config from '../config/test.config.js';
 
 /**
  * Login Page Object
@@ -20,7 +21,10 @@ export default class LoginPage extends BasePage {
   }
 
   // Navigate to login page
-  public async open() {
+  public async open(): Promise<void> {
+    const baseUrl = config.getBaseUrl();
+    await this.navigateTo(baseUrl);
+    await this.waitForPageLoad();
   }
 
   /**

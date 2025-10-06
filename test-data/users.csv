@@ -1,0 +1,12 @@
+username,password,userType,expectedResult,description
+standard_user,secret_sauce,standard,success,Standard user with full access
+locked_out_user,secret_sauce,locked,failure,User that has been locked out
+problem_user,secret_sauce,problem,success,User with visual bugs on product pages
+performance_glitch_user,secret_sauce,performance,success,User experiencing performance issues
+error_user,secret_sauce,error,success,User prone to errors
+visual_user,secret_sauce,visual,success,User for visual testing
+invalid_user,wrong_password,invalid,failure,User with incorrect password
+,secret_sauce,empty_username,failure,Empty username test
+standard_user,,empty_password,failure,Empty password test
+,,empty_both,failure,Both fields empty test
+wrong_user,wrong_pass,invalid_both,failure,Invalid username and password

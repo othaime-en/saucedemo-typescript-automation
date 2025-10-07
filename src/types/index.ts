@@ -51,3 +51,6 @@ export interface Product {
   price: number;
   priceText: string;
 }
+
+// Sort options for products
+export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';

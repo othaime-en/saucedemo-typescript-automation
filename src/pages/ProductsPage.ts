@@ -1,7 +1,7 @@
 import { WebDriver, By } from 'selenium-webdriver';
 
 import BasePage from './BasePage.js';
-import { Product } from '../types/index.js';
+import { Product, SortOption } from '../types/index.js';
 
 /**
  * Products Page Object
@@ -19,6 +19,7 @@ export default class ProductsPage extends BasePage {
   private readonly cartBadge: By = By.css('.shopping_cart_badge');
   private readonly burgerMenu: By = By.id('react-burger-menu-btn');
   private readonly logoutLink: By = By.id('logout_sidebar_link');
+  private readonly sortDropdown: By = By.css('[data-test="product_sort_container"]');
 
 
   constructor(driver: WebDriver) {
@@ -147,6 +148,32 @@ export default class ProductsPage extends BasePage {
     }
   }
 
+
+  /**
+   * Sort products
+   * @param sortOption - Sort option (az, za, lohi, hilo)
+   */
+  public async sortProducts(sortOption: SortOption): Promise<void> {
+    const dropdown = await this.findElement(this.sortDropdown);
+    await dropdown.click();
+
+    const sortMapping: Record<SortOption, string> = {
+      'az': 'az',
+      'za': 'za',
+      'lohi': 'lohi',
+      'hilo': 'hilo'
+    };
+
+    const optionLocator = By.css(`option[value="${sortMapping[sortOption]}"]`);
+    await this.clickElement(optionLocator);
+    await this.driver.sleep(500);
+  }
+
+  // Get current sort option
+  public async getCurrentSortOption(): Promise<string> {
+    const selectedValue = await this.getElementAttribute(this.sortDropdown, 'value');
+    return selectedValue || 'az';
+  }
   
   public async getMostExpensiveProduct(): Promise<Product> {
     const products = await this.getAllProducts();

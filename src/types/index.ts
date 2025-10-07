@@ -43,3 +43,11 @@ export interface UserCredentials {
   expectedResult: 'success' | 'failure';
   description: string;
 }
+
+// Product information
+export interface Product {
+  name: string;
+  description: string;
+  price: number;
+  priceText: string;
+}

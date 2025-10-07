@@ -1,6 +1,7 @@
 import { WebDriver, By } from 'selenium-webdriver';
 
 import BasePage from './BasePage.js';
+import { Product } from '../types/index.js';
 
 /**
  * Products Page Object
@@ -9,6 +10,16 @@ import BasePage from './BasePage.js';
 export default class ProductsPage extends BasePage {
   private readonly pageTitle: By = By.css('.title');
   private readonly productItems: By = By.css('.inventory_item');
+  private readonly productNames: By = By.css('.inventory_item_name');
+  private readonly productDescriptions: By = By.css('.inventory_item_desc');
+  private readonly productPrices: By = By.css('.inventory_item_price');
+  private readonly addToCartButtons: By = By.css('button[id^="add-to-cart"]');
+  private readonly removeButtons: By = By.css('button[id^="remove"]');
+  private readonly shoppingCart: By = By.css('.shopping_cart_link');
+  private readonly cartBadge: By = By.css('.shopping_cart_badge');
+  private readonly burgerMenu: By = By.id('react-burger-menu-btn');
+  private readonly logoutLink: By = By.id('logout_sidebar_link');
+
 
   constructor(driver: WebDriver) {
     super(driver);
@@ -39,4 +50,141 @@ export default class ProductsPage extends BasePage {
     const products = await this.findElements(this.productItems);
     return products.length;
   }
+
+  // Get all products displayed on the page
+  public async getAllProducts(): Promise<Product[]> {
+    const products: Product[] = [];
+    const productElements = await this.findElements(this.productItems);
+
+    for (const element of productElements) {
+      try {
+        const name = await element.findElement(By.css('.inventory_item_name')).getText();
+        const description = await element.findElement(By.css('.inventory_item_desc')).getText();
+        const priceText = await element.findElement(By.css('.inventory_item_price')).getText();
+        const price = parseFloat(priceText.replace("$", ''));
+
+        products.push({name,description,priceText,price})
+
+       
+      } catch (error) {
+        continue;
+      }
+    }
+
+    return products;
+  }
+
+
+  /**
+   * Get product names
+   * @returns Array of product names
+   */
+  public async getProductNames(): Promise<string[]> {
+    const nameElements = await this.findElements(this.productNames);
+    const names: string[] = [];
+
+    for (const element of nameElements) {
+      names.push(await element.getText());
+    }
+
+    return names;
+  }
+
+  /**
+   * Get product prices
+   * @returns Array of product prices
+   */
+  public async getProductPrices(): Promise<number[]> {
+    const priceElements = await this.findElements(this.productPrices);
+    const prices: number[] = [];
+
+    for (const element of priceElements) {
+      const priceText = await element.getText();
+      prices.push(parseFloat(priceText.replace("$", '')));
+    }
+
+    return prices;
+  }
+
+  /**
+   * Add product to cart by name
+   * @param productName - Name of the product to add
+   */
+  public async addProductToCartByName(productName: string): Promise<void> {
+    try {
+      const productId = productName.toLowerCase().replace(/\s+/g, '-');
+      const addButton = By.id(`add-to-cart-${productId}`);
+      await this.clickElement(addButton);
+    } catch (error) {
+      throw new Error(`Failed to add product "${productName}" to cart: ${(error as Error).message}`);
+    }
+  }
+
+  public async addMultipleProductsToCart(productNames: string[]): Promise<void> {
+    for (const name of productNames) {
+      await this.addProductToCartByName(name);
+    }
+  }
+
+  public async removeProductFromCartByName(productName: string): Promise<void> {
+    try {
+      const productId = productName.toLowerCase().replace(/\s+/g, '-');
+      const removeButton = By.id(`remove-${productId}`);
+      await this.clickElement(removeButton);
+    } catch (error) {
+      throw new Error(`Failed to remove product "${productName}": ${(error as Error).message}`);
+    }
+  }
+
+  // Check if product is added to cart
+  public async isProductInCart(productName: string): Promise<boolean> {
+    try {
+      const productId = productName.toLowerCase().replace(/\s+/g, '-');
+      const removeButton = By.id(`remove-${productId}`);
+      return await this.isElementDisplayed(removeButton);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  
+  public async getMostExpensiveProduct(): Promise<Product> {
+    const products = await this.getAllProducts();
+    return products.reduce((max, product) => 
+      product.price > max.price ? product : max
+    );
+  }
+
+  
+  public async getLeastExpensiveProduct(): Promise<Product> {
+    const products = await this.getAllProducts();
+    return products.reduce((min, product) => 
+      product.price < min.price ? product : min
+    );
+  }
+
+  // Navigate to shopping cart
+  public async goToCart(): Promise<void> {
+    await this.clickElement(this.shoppingCart);
+  }
+
+  // Open burger menu
+  public async openMenu(): Promise<void> {
+    await this.clickElement(this.burgerMenu);
+    await this.driver.sleep(500);
+  }
+
+   // Check if cart badge is displayed
+  public async isCartBadgeDisplayed(): Promise<boolean> {
+    return await this.isElementDisplayed(this.cartBadge);
+  }
+
+   // Logout from application
+  public async logout(): Promise<void> {
+    await this.openMenu();
+    await this.waitForElement(this.logoutLink);
+    await this.clickElement(this.logoutLink);
+  }
+
+
 }

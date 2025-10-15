@@ -121,6 +121,18 @@ export default class ProductsPage extends BasePage {
     }
   }
 
+  public async getCartItemCount(): Promise<number> {
+    try {
+      if (await this.isElementDisplayed(this.cartBadge)) {
+        const count = await this.getElementText(this.cartBadge);
+        return parseInt(count, 10);
+      }
+      return 0;
+    } catch (error) {
+      return 0;
+    }
+  }
+
   public async addMultipleProductsToCart(productNames: string[]): Promise<void> {
     for (const name of productNames) {
       await this.addProductToCartByName(name);

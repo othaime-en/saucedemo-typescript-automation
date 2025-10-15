@@ -54,3 +54,26 @@ export interface Product {
 
 // Sort options for products
 export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
+
+// Cart item details
+export interface CartItem {
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+}
+
+//Checkout information
+export interface CheckoutInfo {
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+}
+
+// Order summary details
+export interface OrderSummary {
+  items: CartItem[];
+  subtotal: number;
+  tax: number;
+  total: number;
+}

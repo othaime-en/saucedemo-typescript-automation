@@ -35,7 +35,7 @@ export default class CartPage extends BasePage {
     super(driver);
   }
 
-
+  
   public async isOnCartPage(): Promise<boolean> {
     try {
       const url = await this.getCurrentUrl();
@@ -73,7 +73,7 @@ export default class CartPage extends BasePage {
     return items;
   }
 
-  // Get the number of items in a cart
+  // Get the number of items in cart
   public async getCartItemCount(): Promise<number> {
     const items = await this.findElements(this.cartItems);
     return items.length;
@@ -95,11 +95,51 @@ export default class CartPage extends BasePage {
     return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
+
+  public async proceedToCheckout(): Promise<void> {
+    await this.clickElement(this.checkoutButton);
+  }
+
   public async continueShopping(): Promise<void> {
     await this.clickElement(this.continueShoppingButton);
   }
 
-  //Check if cart is empty
+  public async fillCheckoutInformation(checkoutInfo: CheckoutInfo): Promise<void> {
+    await this.typeText(this.firstNameInput, checkoutInfo.firstName);
+    await this.typeText(this.lastNameInput, checkoutInfo.lastName);
+    await this.typeText(this.postalCodeInput, checkoutInfo.postalCode);
+  }
+
+  // Click continue button on checkout info page
+  public async continueToReview(): Promise<void> {
+    await this.clickElement(this.continueButton);
+  }
+
+  public async cancelCheckout(): Promise<void> {
+    await this.clickElement(this.cancelButton);
+  }
+
+
+  public async finishOrder(): Promise<void> {
+    await this.clickElement(this.finishButton);
+  }
+
+  /**
+   * Complete entire checkout process
+   * @param checkoutInfo - Checkout information
+   */
+  public async completeCheckout(checkoutInfo: CheckoutInfo): Promise<void> {
+    await this.proceedToCheckout();
+    await this.fillCheckoutInformation(checkoutInfo);
+    await this.continueToReview();
+    await this.finishOrder();
+  }
+
+  public async isCheckoutButtonDisplayed(): Promise<boolean> {
+    return await this.isElementDisplayed(this.checkoutButton);
+  }
+
+  // Check if cart is empty
   public async isCartEmpty(): Promise<boolean> {
     const count = await this.getCartItemCount();
     return count === 0;

@@ -77,3 +77,29 @@ export interface OrderSummary {
   tax: number;
   total: number;
 }
+
+// Test result for reporting
+export interface TestResult {
+  suiteName: string;
+  testName: string;
+  status: 'passed' | 'failed' | 'skipped';
+  duration: number;
+  error?: string;
+  screenshot?: string;
+}
+
+// Report data structure
+export interface ReportData {
+  timestamp: string;
+  totalTests: number;
+  passed: number;
+  failed: number;
+  skipped: number;
+  duration: number;
+  testResults: TestResult[];
+  environment: {
+    browser: string;
+    platform: string;
+    nodeVersion: string;
+  };
+}

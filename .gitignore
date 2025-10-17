@@ -1,3 +1,22 @@
+# Dependencies
 node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
 dist/
+build/
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
+
+# Reports and artifacts
+reports/*.html
+reports/screenshots/*.png
+*.log
+
+# Environment files
 .env
+.env.local
+.env.*.local

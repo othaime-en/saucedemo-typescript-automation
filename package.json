@@ -9,7 +9,16 @@
     "build": "tsc",
     "clean": "rimraf dist reports/screenshots reports/*.html",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "npm run build && mocha --require source-map-support/register 'dist/tests/**/*.test.js'",
+    "test:login": "npm run build && mocha --require source-map-support/register 'dist/tests/login.test.js'",
+    "test:products": "npm run build && mocha --require source-map-support/register 'dist/tests/products.test.js'",
+    "test:cart": "npm run build && mocha --require source-map-support/register 'dist/tests/cart.test.js'",
+    "test:chrome": "npm run build && BROWSER=chrome mocha --require source-map-support/register 'dist/tests/**/*.test.js'",
+    "test:firefox": "npm run build && BROWSER=firefox mocha --require source-map-support/register 'dist/tests/**/*.test.js'",
+    "test:headless": "npm run build && HEADLESS=true mocha --require source-map-support/register 'dist/tests/**/*.test.js'",
+    "test:parallel": "npm run build && mocha --require source-map-support/register --parallel 'dist/tests/**/*.test.js'",
+    "pretest": "npm run build"
   },
   "keywords": [],
   "author": "othaimeen",

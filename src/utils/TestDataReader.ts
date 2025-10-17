@@ -3,7 +3,10 @@ import { parse } from 'csv-parse/sync';
 import path from 'path';
 
 import type { 
-  UserCredentials,   
+  UserCredentials, 
+  CheckoutInfo, 
+  TestData, 
+  ShoppingScenario 
 } from '../types/index.js';
 
 /**
@@ -41,7 +44,11 @@ class TestDataReader {
     }
   }
 
-  // Read and parse a JSON file
+  /**
+   * Read and parse a JSON file
+   * @param filename - Name of JSON file
+   * @returns Parsed JSON data
+   */
   public async readJsonFile<T>(filename: string): Promise<T> {
     try {
       const filePath = path.join(this.testDataDir, filename);
@@ -59,6 +66,41 @@ class TestDataReader {
       ...user,
       expectedResult: user.expectedResult as 'success' | 'failure'
     }));
+  }
+
+  // Get valid users for testing
+  public async getValidUsers(): Promise<UserCredentials[]> {
+    const allUsers = await this.getUserTestData();
+    return allUsers.filter(user => user.expectedResult === 'success');
+  }
+
+  // Get invalid users for negative testing
+  public async getInvalidUsers(): Promise<UserCredentials[]> {
+    const allUsers = await this.getUserTestData();
+    return allUsers.filter(user => user.expectedResult === 'failure');
+  }
+
+  //Get checkout test data from a JSON file
+  public async getCheckoutTestData(): Promise<TestData> {
+    return this.readJsonFile<TestData>('checkout-data.json');
+  }
+
+  // Get valid checkout data
+  public async getValidCheckoutData(): Promise<CheckoutInfo[]> {
+    const testData = await this.getCheckoutTestData();
+    return testData.validCheckoutData;
+  }
+
+  // Get invalid checkout data for negative testing
+  public async getInvalidCheckoutData(): Promise<CheckoutInfo[]> {
+    const testData = await this.getCheckoutTestData();
+    return testData.invalidCheckoutData;
+  }
+
+  // Get shopping scenarios for data-driven testing
+  public async getShoppingScenarios(): Promise<ShoppingScenario[]> {
+    const testData = await this.getCheckoutTestData();
+    return testData.shoppingScenarios;
   }
 
   // Get specific user by username

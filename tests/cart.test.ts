@@ -66,6 +66,38 @@ describe('Cart Tests', function() {
     expect(expectedSubtotal).to.be.greaterThan(0);
   });
 
+  it('should proceed to checkout successfully', async function() {
+    await productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await productsPage.goToCart();
+    await cartPage.proceedToCheckout();
+   
+    const url = await driver.getCurrentUrl();
+    expect(url).to.include('checkout-step-one');
+  });
+
+  it('should complete checkout with valid data', async function() {
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[0];
+   
+    await productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await productsPage.goToCart();
+    await cartPage.completeCheckout(checkoutData);
+   
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
+   
+    const completionMessage = await cartPage.getCompletionMessage();
+    expect(completionMessage).to.include('Thank you');
+  });
+
+  it('should continue shopping from cart', async function() {
+    await productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await productsPage.goToCart();
+    await cartPage.continueShopping();
+   
+    const isOnProducts = await productsPage.isOnProductsPage();
+    expect(isOnProducts).to.be.true;
+  });
+
   it('should verify empty cart state', async function() {
     await productsPage.goToCart();
    

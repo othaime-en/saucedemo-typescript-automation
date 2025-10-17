@@ -124,6 +124,18 @@ describe('Cart Tests', function() {
     expect(summary.total).to.equal(summary.subtotal + summary.tax);
   });
 
+  it('should verify cart item details', async function() {
+    await productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await productsPage.goToCart();
+   
+    const items = await cartPage.getCartItems();
+    expect(items[0]).to.have.property('name');
+    expect(items[0]).to.have.property('description');
+    expect(items[0]).to.have.property('price');
+    expect(items[0]).to.have.property('quantity');
+    expect(items[0].quantity).to.equal(1);
+  });
+
   it('should continue shopping from cart', async function() {
     await productsPage.addProductToCartByName('Sauce Labs Backpack');
     await productsPage.goToCart();
@@ -138,5 +150,49 @@ describe('Cart Tests', function() {
    
     const isEmpty = await cartPage.isCartEmpty();
     expect(isEmpty).to.be.true;
+  });
+
+  it('should handle multiple items with different prices', async function() {
+    const products = ['Sauce Labs Fleece Jacket', 'Sauce Labs Onesie', 'Sauce Labs Bolt T-Shirt'];
+    await productsPage.addMultipleProductsToCart(products);
+    await productsPage.goToCart();
+   
+    const items = await cartPage.getCartItems();
+    expect(items).to.have.lengthOf(3);
+   
+    const uniquePrices = new Set(items.map(item => item.price));
+    expect(uniquePrices.size).to.be.greaterThan(1);
+  });
+
+  it('should verify checkout button is displayed', async function() {
+    await productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await productsPage.goToCart();
+   
+    const checkoutDisplayed = await cartPage.isCheckoutButtonDisplayed();
+    expect(checkoutDisplayed).to.be.true;
+  });
+
+  it('should complete full shopping workflow', async function() {
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[0];
+    const products = ['Sauce Labs Backpack', 'Sauce Labs Bike Light'];
+   
+    await productsPage.addMultipleProductsToCart(products);
+    const cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(2);
+   
+    await productsPage.goToCart();
+    const isOnCart = await cartPage.isOnCartPage();
+    expect(isOnCart).to.be.true;
+   
+    await cartPage.proceedToCheckout();
+    await cartPage.fillCheckoutInformation(checkoutData);
+    await cartPage.continueToReview();
+   
+    const calculationsCorrect = await cartPage.verifyOrderCalculations();
+    expect(calculationsCorrect).to.be.true;
+   
+    await cartPage.finishOrder();
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
   });
 });

@@ -103,3 +103,18 @@ export interface ReportData {
     nodeVersion: string;
   };
 }
+
+//Shopping scenario for data-driven testing
+export interface ShoppingScenario {
+  scenarioName: string;
+  products: string[];
+  expectedSubtotal: number;
+  checkoutInfo: CheckoutInfo;
+}
+
+// Test data structure
+export interface TestData {
+  validCheckoutData: CheckoutInfo[];
+  invalidCheckoutData: CheckoutInfo[];
+  shoppingScenarios: ShoppingScenario[];
+}

@@ -89,6 +89,41 @@ describe('Cart Tests', function() {
     expect(completionMessage).to.include('Thank you');
   });
 
+  it('should test data-driven checkout scenarios', async function() {
+    const scenarios = await TestDataReader.getShoppingScenarios();
+   
+    for (const scenario of scenarios) {
+      await loginPage.open();
+      await loginPage.login((await TestDataReader.getStandardUser()).username, 'secret_sauce');
+     
+      await productsPage.addMultipleProductsToCart(scenario.products);
+      await productsPage.goToCart();
+     
+      const actualSubtotal = await cartPage.calculateExpectedSubtotal();
+      expect(Math.abs(actualSubtotal - scenario.expectedSubtotal)).to.be.lessThan(0.01);
+     
+      await cartPage.completeCheckout(scenario.checkoutInfo);
+     
+      const isComplete = await cartPage.isOrderComplete();
+      expect(isComplete).to.be.true;
+    }
+  });
+
+  it('should verify order summary calculations', async function() {
+    await productsPage.addMultipleProductsToCart(['Sauce Labs Backpack', 'Sauce Labs Bike Light']);
+    await productsPage.goToCart();
+   
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[0];
+    await cartPage.proceedToCheckout();
+    await cartPage.fillCheckoutInformation(checkoutData);
+    await cartPage.continueToReview();
+   
+    const summary = await cartPage.getOrderSummary();
+    expect(summary.subtotal).to.be.greaterThan(0);
+    expect(summary.tax).to.be.greaterThan(0);
+    expect(summary.total).to.equal(summary.subtotal + summary.tax);
+  });
+
   it('should continue shopping from cart', async function() {
     await productsPage.addProductToCartByName('Sauce Labs Backpack');
     await productsPage.goToCart();

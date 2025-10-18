@@ -19,7 +19,7 @@ export default class ProductsPage extends BasePage {
   private readonly cartBadge: By = By.css('.shopping_cart_badge');
   private readonly burgerMenu: By = By.id('react-burger-menu-btn');
   private readonly logoutLink: By = By.id('logout_sidebar_link');
-  private readonly sortDropdown: By = By.css('[data-test="product_sort_container"]');
+  private readonly sortDropdown: By = By.css('.product_sort_container');
 
 
   constructor(driver: WebDriver) {

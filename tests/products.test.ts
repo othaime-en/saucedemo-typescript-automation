@@ -48,16 +48,8 @@ describe('Products Tests', function() {
     expect(isInCart).to.be.true;
   });
 
-  it('should add multiple products to cart', async function() {
-    const products = ['Sauce Labs Backpack', 'Sauce Labs Bike Light', 'Sauce Labs Bolt T-Shirt'];
-    
-    await productsPage.addMultipleProductsToCart(products);
-    
-    const cartCount = await productsPage.getCartItemCount();
-    expect(cartCount).to.equal(products.length);
-  });
-
   it('should remove product from cart', async function() {
+    await productsPage.resetAppState();
     const productName = 'Sauce Labs Backpack';
     
     await productsPage.addProductToCartByName(productName);
@@ -69,6 +61,16 @@ describe('Products Tests', function() {
     
     const isInCart = await productsPage.isProductInCart(productName);
     expect(isInCart).to.be.false;
+  });
+
+  it('should add multiple products to cart', async function() {
+    await productsPage.resetAppState();
+    const products = ['Sauce Labs Backpack', 'Sauce Labs Bike Light', 'Sauce Labs Bolt T-Shirt'];
+    
+    await productsPage.addMultipleProductsToCart(products);
+    
+    const cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(products.length);
   });
 
   it('should sort products by name A to Z', async function() {
@@ -124,14 +126,17 @@ describe('Products Tests', function() {
   });
 
   it('should navigate to cart page', async function() {
+    await productsPage.resetAppState();
     await productsPage.addProductToCartByName('Sauce Labs Backpack');
     await productsPage.goToCart();
     
     const url = await driver.getCurrentUrl();
     expect(url).to.include('cart.html');
+    await productsPage.navigateToProductsPage();
   });
 
   it('should display cart badge when items added', async function() {
+    await productsPage.resetAppState();
     await productsPage.addProductToCartByName('Sauce Labs Backpack');
     
     const badgeDisplayed = await productsPage.isCartBadgeDisplayed();

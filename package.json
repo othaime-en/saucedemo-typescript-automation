@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc",
-    "clean": "rimraf dist reports/screenshots reports/*.html",
+    "clean": "rimraf dist reports/screenshots && del /s /q \"reports\\*.html\"",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "npm run build && mocha --require source-map-support/register 'dist/tests/**/*.test.js'",

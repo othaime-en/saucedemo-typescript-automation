@@ -1,0 +1,109 @@
+{
+  "validCheckoutData": [
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "postalCode": "12345"
+    },
+    {
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "postalCode": "67890"
+    },
+    {
+      "firstName": "Bob",
+      "lastName": "Johnson",
+      "postalCode": "54321"
+    },
+    {
+      "firstName": "Alice",
+      "lastName": "Williams",
+      "postalCode": "98765"
+    }
+  ],
+  "invalidCheckoutData": [
+    {
+      "firstName": "",
+      "lastName": "Doe",
+      "postalCode": "12345"
+    },
+    {
+      "firstName": "John",
+      "lastName": "",
+      "postalCode": "12345"
+    },
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "postalCode": ""
+    }
+  ],
+  "shoppingScenarios": [
+    {
+      "scenarioName": "Single Item Purchase",
+      "products": [
+        "Sauce Labs Backpack"
+      ],
+      "expectedSubtotal": 29.99,
+      "checkoutInfo": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "postalCode": "12345"
+      }
+    },
+    {
+      "scenarioName": "Two Items Purchase",
+      "products": [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bike Light"
+      ],
+      "expectedSubtotal": 39.98,
+      "checkoutInfo": {
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "postalCode": "67890"
+      }
+    },
+    {
+      "scenarioName": "Three Items Purchase",
+      "products": [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bike Light",
+        "Sauce Labs Bolt T-Shirt"
+      ],
+      "expectedSubtotal": 55.97,
+      "checkoutInfo": {
+        "firstName": "Bob",
+        "lastName": "Johnson",
+        "postalCode": "54321"
+      }
+    },
+    {
+      "scenarioName": "Multiple Items High Value",
+      "products": [
+        "Sauce Labs Fleece Jacket",
+        "Sauce Labs Backpack",
+        "Sauce Labs Onesie"
+      ],
+      "expectedSubtotal": 77.97,
+      "checkoutInfo": {
+        "firstName": "Alice",
+        "lastName": "Williams",
+        "postalCode": "98765"
+      }
+    },
+    {
+      "scenarioName": "Budget Purchase",
+      "products": [
+        "Sauce Labs Bike Light",
+        "Sauce Labs Bolt T-Shirt"
+      ],
+      "expectedSubtotal": 25.98,
+      "checkoutInfo": {
+        "firstName": "Charlie",
+        "lastName": "Brown",
+        "postalCode": "11111"
+      }
+    }
+  ]
+}

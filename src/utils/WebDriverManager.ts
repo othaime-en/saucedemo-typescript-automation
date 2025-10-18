@@ -58,7 +58,10 @@ class WebDriverManager {
       );
 
       chromeOptions.setUserPreferences({
-        'profile.default_content_setting_values.notifications': 2
+        'profile.default_content_setting_values.notifications': 2,
+        'profile.password_manager_leak_detection': false,
+        'credentials_enable_service': false,
+        'profile.password_manager_enabled': false,
       });
 
       builder.forBrowser('chrome').setChromeOptions(chromeOptions);

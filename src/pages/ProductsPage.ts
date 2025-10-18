@@ -20,6 +20,7 @@ export default class ProductsPage extends BasePage {
   private readonly burgerMenu: By = By.id('react-burger-menu-btn');
   private readonly logoutLink: By = By.id('logout_sidebar_link');
   private readonly sortDropdown: By = By.css('.product_sort_container');
+  private readonly resetAppLink: By = By.id('reset_sidebar_link');
 
 
   constructor(driver: WebDriver) {
@@ -225,5 +226,20 @@ export default class ProductsPage extends BasePage {
     await this.clickElement(this.logoutLink);
   }
 
+  public async resetAppState(): Promise<void> {
+    await this.openMenu();
+    await this.waitForElement(this.resetAppLink);
+    await this.clickElement(this.resetAppLink);
+    await this.refreshPage();
+  }
+
+  public async navigateToProductsPage(): Promise<void> {
+    const currentUrl = await this.getCurrentUrl();
+    if (!currentUrl.includes('inventory.html')) {
+      const productsUrl = currentUrl.split('/').slice(0, -1).join('/') + '/inventory.html';
+      await this.navigateTo(productsUrl);
+      await this.waitForPageLoad();
+    }
+  }
 
 }

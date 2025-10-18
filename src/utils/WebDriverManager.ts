@@ -1,4 +1,4 @@
-import { Builder, WebDriver, Capabilities } from 'selenium-webdriver';
+import { Builder, WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
 import firefox from 'selenium-webdriver/firefox.js';
 
@@ -39,7 +39,6 @@ class WebDriverManager {
     const browser = browserName || browserConfig.name;
     const isHeadless = headless !== undefined ? headless : browserConfig.headless;
 
-    let capabilities: Capabilities;
     const builder = new Builder();
 
     if (browser === 'chrome') {

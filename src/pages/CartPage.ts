@@ -9,10 +9,10 @@ import type { CartItem, CheckoutInfo, OrderSummary } from '../types/index.js';
 export default class CartPage extends BasePage {
   private readonly pageTitle: By = By.css('.title');
   private readonly cartItems: By = By.css('.cart_item');
-  private readonly cartItemNames: By = By.css('.inventory_item_name');
-  private readonly cartItemPrices: By = By.css('.inventory_item_price');
-  private readonly cartItemDescriptions: By = By.css('.inventory_item_desc');
-  private readonly removeButtons: By = By.css('button[id^="remove"]');
+  // private readonly cartItemNames: By = By.css('.inventory_item_name');
+  // private readonly cartItemPrices: By = By.css('.inventory_item_price');
+  // private readonly cartItemDescriptions: By = By.css('.inventory_item_desc');
+  // private readonly removeButtons: By = By.css('button[id^="remove"]');
   private readonly checkoutButton: By = By.id('checkout');
   private readonly continueShoppingButton: By = By.id('continue-shopping');
 

@@ -11,10 +11,10 @@ export default class ProductsPage extends BasePage {
   private readonly pageTitle: By = By.css('.title');
   private readonly productItems: By = By.css('.inventory_item');
   private readonly productNames: By = By.css('.inventory_item_name');
-  private readonly productDescriptions: By = By.css('.inventory_item_desc');
+  // private readonly productDescriptions: By = By.css('.inventory_item_desc');
   private readonly productPrices: By = By.css('.inventory_item_price');
-  private readonly addToCartButtons: By = By.css('button[id^="add-to-cart"]');
-  private readonly removeButtons: By = By.css('button[id^="remove"]');
+  // private readonly addToCartButtons: By = By.css('button[id^="add-to-cart"]');
+  // private readonly removeButtons: By = By.css('button[id^="remove"]');
   private readonly shoppingCart: By = By.css('.shopping_cart_link');
   private readonly cartBadge: By = By.css('.shopping_cart_badge');
   private readonly burgerMenu: By = By.id('react-burger-menu-btn');

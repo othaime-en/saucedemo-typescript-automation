@@ -72,4 +72,53 @@ describe('End-to-End Tests', function() {
     const isComplete = await cartPage.isOrderComplete();
     expect(isComplete).to.be.true;
   });
+
+  it('should handle multi-product shopping scenario', async function() {
+    const user = await TestDataReader.getStandardUser();
+    const scenario = (await TestDataReader.getShoppingScenarios())[2];
+    
+    await loginPage.open();
+    await loginPage.login(user.username, user.password);
+    
+    await productsPage.addMultipleProductsToCart(scenario.products);
+    await ScreenshotUtils.captureStep(driver, 'e2e-multi-product', 'products-added');
+    
+    const cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(scenario.products.length);
+    
+    await productsPage.goToCart();
+    
+    const actualSubtotal = await cartPage.calculateExpectedSubtotal();
+    expect(Math.abs(actualSubtotal - scenario.expectedSubtotal)).to.be.lessThan(0.01);
+    
+    await cartPage.completeCheckout(scenario.checkoutInfo);
+    await ScreenshotUtils.captureStep(driver, 'e2e-multi-product', 'order-complete');
+    
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
+  });
+
+  it('should test complete workflow with product sorting', async function() {
+    const user = await TestDataReader.getStandardUser();
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[1];
+    
+    await loginPage.open();
+    await loginPage.login(user.username, user.password);
+    
+    await productsPage.sortProducts('lohi');
+    await ScreenshotUtils.captureStep(driver, 'e2e-sorting', 'sorted-low-high');
+    
+    const prices = await productsPage.getProductPrices();
+    const sortedPrices = [...prices].sort((a, b) => a - b);
+    expect(prices).to.deep.equal(sortedPrices);
+    
+    const leastExpensive = await productsPage.getLeastExpensiveProduct();
+    await productsPage.addProductToCartByName(leastExpensive.name);
+    
+    await productsPage.goToCart();
+    await cartPage.completeCheckout(checkoutData);
+    
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
+  });
 });

@@ -32,8 +32,9 @@ describe('Cart Tests', function() {
   });
 
   beforeEach(async function() {
-    await loginPage.open();
-    await loginPage.login((await TestDataReader.getStandardUser()).username, 'secret_sauce');
+    // await loginPage.open();
+    // await loginPage.login((await TestDataReader.getStandardUser()).username, 'secret_sauce');
+    await productsPage.resetAppState();
   });
 
   it('should display items in cart', async function() {
@@ -53,8 +54,8 @@ describe('Cart Tests', function() {
     expect(itemCount).to.equal(1);
    
     await cartPage.removeItemFromCart('Sauce Labs Backpack');
-    itemCount = await cartPage.getCartItemCount();
-    expect(itemCount).to.equal(0);
+    const isEmpty = await cartPage.isCartEmpty();
+    expect(isEmpty).to.be.true;
   });
 
   it('should calculate correct subtotal', async function() {

@@ -75,7 +75,7 @@ export default class CartPage extends BasePage {
 
   // Get the number of items in cart
   public async getCartItemCount(): Promise<number> {
-    const items = await this.findElements(this.cartItems);
+    const items = await this.findElementsSafe(this.cartItems);
     return items.length;
   }
 

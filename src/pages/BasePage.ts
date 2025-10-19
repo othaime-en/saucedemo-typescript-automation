@@ -44,6 +44,16 @@ export default class BasePage {
     }
   }
 
+  // Find multiple elements safely, returns empty array if none found
+  protected async findElementsSafe(locator: By): Promise<WebElement[]> {
+      try {
+          return await this.driver.findElements(locator);
+      } catch (error) {
+          console.warn(`No elements found for locator ${locator.toString()}: ${(error as Error).message}`);
+          return [];
+      }
+  }
+
   // Click element with wait
   protected async clickElement(locator: By, timeout?: number): Promise<void> {
     try {

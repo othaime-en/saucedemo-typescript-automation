@@ -32,8 +32,8 @@ describe('Cart Tests', function() {
   });
 
   beforeEach(async function() {
-    // await loginPage.open();
-    // await loginPage.login((await TestDataReader.getStandardUser()).username, 'secret_sauce');
+    await loginPage.open();
+    await loginPage.login((await TestDataReader.getStandardUser()).username, 'secret_sauce');
     await productsPage.resetAppState();
   });
 

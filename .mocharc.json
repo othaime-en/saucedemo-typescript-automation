@@ -1,0 +1,10 @@
+{
+  "require": ["source-map-support/register"],
+  "spec": "dist/tests/**/*.test.js",
+  "timeout": 60000,
+  "recursive": true,
+  "reporter": "spec",
+  "bail": false,
+  "color": true,
+  "exit": true
+}

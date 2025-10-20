@@ -1,4 +1,7 @@
+import {config as dotenvConfig} from 'dotenv';
 import type { TestConfig } from '../types/index.js';
+
+dotenvConfig();
 
 /**
  * Test configuration management

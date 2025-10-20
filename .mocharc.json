@@ -1,5 +1,5 @@
 {
-  "require": ["source-map-support/register"],
+  "require": ["source-map-support/register", "dotenv/config", "dist/tests/hooks.js"],
   "spec": "dist/tests/**/*.test.js",
   "timeout": 60000,
   "recursive": true,

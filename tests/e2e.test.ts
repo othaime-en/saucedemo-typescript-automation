@@ -121,4 +121,122 @@ describe('End-to-End Tests', function() {
     const isComplete = await cartPage.isOrderComplete();
     expect(isComplete).to.be.true;
   });
+
+  it('should test cart modifications before checkout', async function() {
+    const user = await TestDataReader.getStandardUser();
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[2];
+    
+    await loginPage.open();
+    await loginPage.login(user.username, user.password);
+    
+    await productsPage.addMultipleProductsToCart([
+      'Sauce Labs Backpack',
+      'Sauce Labs Bike Light',
+      'Sauce Labs Bolt T-Shirt'
+    ]);
+    
+    await productsPage.goToCart();
+    let itemCount = await cartPage.getCartItemCount();
+    expect(itemCount).to.equal(3);
+    
+    await cartPage.removeItemFromCart('Sauce Labs Bike Light');
+    await ScreenshotUtils.captureStep(driver, 'e2e-cart-mods', 'item-removed');
+    
+    itemCount = await cartPage.getCartItemCount();
+    expect(itemCount).to.equal(2);
+    
+    await cartPage.completeCheckout(checkoutData);
+    
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
+  });
+
+  it('should verify business calculations in complete workflow', async function() {
+    const user = await TestDataReader.getStandardUser();
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[3];
+    
+    await loginPage.open();
+    await loginPage.login(user.username, user.password);
+    
+    const products = await productsPage.getAllProducts();
+    const selectedProducts = products.slice(0, 3);
+    const expectedTotal = selectedProducts.reduce((sum, p) => sum + p.price, 0);
+    
+    for (const product of selectedProducts) {
+      await productsPage.addProductToCartByName(product.name);
+    }
+    
+    await productsPage.goToCart();
+    
+    const actualSubtotal = await cartPage.calculateExpectedSubtotal();
+    expect(Math.abs(actualSubtotal - expectedTotal)).to.be.lessThan(0.01);
+    
+    await cartPage.proceedToCheckout();
+    await cartPage.fillCheckoutInformation(checkoutData);
+    await cartPage.continueToReview();
+    
+    const summary = await cartPage.getOrderSummary();
+    const taxRate = summary.tax / summary.subtotal;
+    expect(taxRate).to.be.greaterThan(0);
+    expect(taxRate).to.be.lessThan(0.15);
+    
+    const calculatedTotal = summary.subtotal + summary.tax;
+    expect(Math.abs(summary.total - calculatedTotal)).to.be.lessThan(0.01);
+    
+    await ScreenshotUtils.captureStep(driver, 'e2e-calculations', 'order-summary');
+    
+    await cartPage.finishOrder();
+    
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
+  });
+
+  it('should handle error recovery scenario', async function() {
+    const user = await TestDataReader.getStandardUser();
+    
+    await loginPage.open();
+    await loginPage.login('invalid_user', 'wrong_pass');
+    
+    const errorDisplayed = await loginPage.isErrorDisplayed();
+    expect(errorDisplayed).to.be.true;
+    
+    await loginPage.clearLoginForm();
+    await loginPage.login(user.username, user.password);
+    
+    const isOnProducts = await productsPage.isOnProductsPage();
+    expect(isOnProducts).to.be.true;
+  });
+
+  it('should test maximum items in cart', async function() {
+    const user = await TestDataReader.getStandardUser();
+    const checkoutData = (await TestDataReader.getValidCheckoutData())[0];
+    
+    await loginPage.open();
+    await loginPage.login(user.username, user.password);
+    await productsPage.resetAppState();
+    
+    const allProducts = await productsPage.getProductNames();
+    await productsPage.addMultipleProductsToCart(allProducts);
+    
+    const cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(allProducts.length);
+    
+    await productsPage.goToCart();
+    await ScreenshotUtils.captureStep(driver, 'e2e-max-items', 'full-cart');
+    
+    const items = await cartPage.getCartItems();
+    expect(items).to.have.lengthOf(allProducts.length);
+    
+    await cartPage.proceedToCheckout();
+    await cartPage.fillCheckoutInformation(checkoutData);
+    await cartPage.continueToReview();
+    
+    const calculationsCorrect = await cartPage.verifyOrderCalculations();
+    expect(calculationsCorrect).to.be.true;
+    
+    await cartPage.finishOrder();
+    
+    const isComplete = await cartPage.isOrderComplete();
+    expect(isComplete).to.be.true;
+  });
 });

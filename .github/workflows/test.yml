@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [18, 20]
+        node-version: [20]
         os: [ubuntu-latest]
         browser: [chrome, firefox]
       fail-fast: false

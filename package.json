@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc",
-    "clean": "rimraf dist reports/screenshots && del /s /q \"reports\\*.html\"",
+    "clean": "del-cli dist reports/screenshots reports/*.html",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "npm run build && cross-env NODE_ENV=test mocha",
@@ -31,6 +31,7 @@
     "@types/selenium-webdriver": "^4.35.1",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
+    "del-cli": "^7.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
     "rimraf": "^5.0.5",

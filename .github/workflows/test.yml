@@ -34,7 +34,6 @@ jobs:
 
   test:
     name: Test Suite
-    needs: [lint]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

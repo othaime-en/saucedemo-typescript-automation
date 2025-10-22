@@ -40,3 +40,12 @@ BROWSER=chrome          # chrome or firefox
 HEADLESS=false         # true for headless mode
 BASE_URL=https://www.saucedemo.com
 ```
+
+## Test Execution
+
+```bash
+npm test                    # All tests, visible browser
+npm run test:headless       # Headless mode
+npm run test:chrome         # Force Chrome
+npm run test:firefox        # Force Firefox
+```

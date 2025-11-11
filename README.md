@@ -49,3 +49,12 @@ npm run test:headless       # Headless mode
 npm run test:chrome         # Force Chrome
 npm run test:firefox        # Force Firefox
 ```
+
+## Reports
+
+After test execution:
+
+- HTML reports: `reports/test-report_*.html`
+- Screenshots: `reports/screenshots/`
+
+Open the HTML report in your browser to view detailed results.
